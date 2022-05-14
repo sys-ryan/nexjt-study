@@ -1,11 +1,13 @@
 import { Fragment } from "react";
 import { useRouter } from "next/router";
-import { getAllEvents } from "../../dummy-data";
+
 import EventList from "../../components/events/EventList";
 import EventsSearch from "../../components/events/EventsSearch";
 
-const EventsPage = () => {
-  const events = getAllEvents();
+import { getAllEvents } from "../../helpers/api-util";
+
+const EventsPage = (props) => {
+  const { events } = props;
   const router = useRouter();
 
   const findEventHandler = (year, month) => {
@@ -22,3 +24,15 @@ const EventsPage = () => {
 };
 
 export default EventsPage;
+
+export async function getServerSideProps(context) {
+  const { params, req, res } = context;
+
+  const events = await getAllEvents();
+
+  return {
+    props: {
+      events,
+    },
+  };
+}
