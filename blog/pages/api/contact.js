@@ -1,4 +1,6 @@
-const handler = (req, res) => {
+import { connectDatabase } from "../../lib/db-util";
+
+const handler = async (req, res) => {
   if (req.method === "POST") {
     const { email, name, message } = req.body;
 
@@ -20,8 +22,22 @@ const handler = (req, res) => {
       message,
     };
 
-    console.log(newMessage);
+    const client = await connectDatabase();
+    const db = client.db();
 
-    res.status(201).json({ message: newMessage });
+    try {
+      const result = await db.collection("messages").insertOne(newMessage);
+      newMessage.id = result.insertedId;
+    } catch (error) {
+      client.close();
+      res.status(500).json({ message: "Storing message failed!" });
+      return;
+    }
+
+    client.close();
+
+    res.status(201).json({ message: "Successfully stored message!", message: newMessage });
   }
 };
+
+export default handler;
