@@ -1,7 +1,7 @@
-import classes from "./logo.module.css";
+import classes from "./Logo.module.css";
 
 const Logo = () => {
-  return <div className={classes.logo}>Ryan's Next Blog</div>;
+  return <a className={classes.logo}>Ryan's Next Blog</a>;
 };
 
 export default Logo;
